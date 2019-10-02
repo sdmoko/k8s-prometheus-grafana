@@ -1,0 +1,45 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: monit
+  namespace: kube-monit
+provisioner: kubernetes.io/no-provisionere
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: "v1"
+kind: "PersistentVolume"
+metadata:
+  name: pv-monit
+  namespace: kube-monit
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: monit
+  local:
+    path: /data/volume2
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prometheus-claim
+  namespace: kube-monit
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "monit"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 50Gi
