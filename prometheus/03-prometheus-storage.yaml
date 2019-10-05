@@ -19,7 +19,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: monit
   local:
-    path: /data/volume2
+    path: /root/data/volume2
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -27,7 +27,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - worker
+          - kubic-worker-2
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
